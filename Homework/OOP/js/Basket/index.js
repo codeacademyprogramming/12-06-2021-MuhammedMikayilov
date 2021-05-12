@@ -3,7 +3,7 @@ import { STORAGE_KEYS } from '../Storage/consts.js';
 
 
 class ProductService {
-    defaultProduct = 'null'
+    defaultProduct = {}
 
     constructor(){
         if(!this.removeFromBasket()){

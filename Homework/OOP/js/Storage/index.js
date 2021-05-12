@@ -1,6 +1,6 @@
 class Storage {
     setItem(key,value){
-        window.localStorage.setItem(key, value);
+        window.localStorage.setItem(key, JSON.stringify(value));
     }
 
     getItem(key){

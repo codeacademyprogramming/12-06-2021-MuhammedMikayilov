@@ -1,35 +1,49 @@
 import { productList } from "../ProductApi.js";
+import { storage } from "../Storage/index.js";
 class Cards {
   items = document.querySelector("#pizzas .pizzaItems");
   button = document.querySelector("#pizzas .button button");
   cards = productList.getProductList();
+  array = [];
 
   returnList() {
     return this.cards;
   }
 
-  returnWhenClick (item, index) {
-    if(this.button !== null){
-        return this.button.addEventListener("click", ()=>{
-            console.log("test");
-        })
+  returnWhenClick(item, index) {
+    if (this.button !== null) {
+      return this.button.addEventListener("click", () => {
+        console.log("test");
+      });
     }
   }
 
+  setLocalWhickChecked(item) {
+    storage.setItem("PRODUCT", item);
+  }
+
+  returnArrayForBasket() {
+      return this.array;
+  }
+ 
   returnCards() {
     this.returnList().then((arr) => {
-        document.querySelector(".loader").classList.add("d-none")
+      document.querySelector(".loader").classList.add("d-none");
       arr.forEach((item, index) => {
         this.items.innerHTML += `
                 <div class="col-md-3 mt-5">
                 <div class="card" style="width: 18rem;">
-                  <img src="../assets/imgs/products/pizza-${index+1}.png" class="card-img-top" alt="pizza-1">
+                  <img src="../assets/imgs/products/pizza-${
+                    index + 1
+                  }.png" class="card-img-top" alt="pizza-1">
                   <div class="card-body">
                   <div class="card-title d-flex justify-content-between">
                     <h5>${item.name}</h5>
                     <span>32cm</span>
                   </div>
-                    <p class="card-text">${item.topping? item.topping : "Resept tapilmadi"}</p>
+                    <p class="card-text">${
+                      item.topping ? item.topping : "Resept tapilmadi"
+                    }</p>
                     <div class="card-span">
                       ${item.price}$
                     </div>
@@ -44,20 +58,20 @@ class Cards {
                     <strong style="font-size: 25px; display: inline-block; margin-bottom: 30px;">Sizes: </strong>
                     <form>
                       <div class="form-check">
-                        <input class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault1">
-                        <label class="form-check-label" for="flexRadioDefault1">
+                        <input class="form-check-input" data-key="small" type="radio" name="flexRadioDefault">
+                        <label class="form-check-label">
                           small - 20cm
                         </label>
                       </div>
                       <div class="form-check my-3">
-                        <input class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault2" checked>
-                        <label class="form-check-label" for="flexRadioDefault2">
+                        <input class="form-check-input" data-key="medium" type="radio" name="flexRadioDefault">
+                        <label class="form-check-label">
                           medium - 25cm
                         </label>
                       </div>
                       <div class="form-check">
-                        <input class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault2" checked>
-                        <label class="form-check-label" for="flexRadioDefault2">
+                        <input class="form-check-input" data-key="large" type="radio" name="flexRadioDefault">
+                        <label class="form-check-label">
                           big - 32cm
                         </label>
                       </div>
@@ -68,21 +82,37 @@ class Cards {
               </div>
                 `;
 
-        // this.returnWhenClick(item, index)
-        document.querySelectorAll(".button button").forEach((btn, idx)=>{
-            btn.addEventListener("click", function(e){
-                console.log("true", idx);
-                document.querySelectorAll(".sizes")[idx].classList.remove("hidden")
-                btn.parentElement.classList.add("d-none")
-            })
-        })
+        document.querySelectorAll(".button button").forEach((btn, idx) => {
+          btn.addEventListener("click", function (e) {
+            console.log("true", idx);
+            document.querySelectorAll(".sizes")[idx].classList.remove("hidden");
+            btn.parentElement.classList.add("d-none");
+          });
+        });
+
+        document.querySelectorAll(".sizes form").forEach((form, key) => {
+          form.addEventListener("submit", (e) => {
+            e.preventDefault();
+            document
+              .querySelectorAll(".sizes form .form-check .form-check-input")
+              .forEach((size, sizeIndex) => {
+                if (size.checked) {
+                  this.size = size.getAttribute("data-key");
+                  this.array.push({...item, size: this.size,
+                    name: arr[key].name,
+                    price: arr[key].price,});
+                  this.setLocalWhickChecked(this.array);
+                }
+              });
+          });
+
+
+        });
       });
+
+      
     });
   }
-
-
 }
-
-// export default Cards;
 
 export const pizzas = new Cards();
