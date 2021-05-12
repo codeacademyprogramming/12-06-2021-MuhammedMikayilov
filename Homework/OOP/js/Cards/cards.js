@@ -1,14 +1,24 @@
 import { productList } from "../ProductApi.js";
 class Cards {
   items = document.querySelector("#pizzas .pizzaItems");
+  button = document.querySelector("#pizzas .button button");
   cards = productList.getProductList();
 
   returnList() {
     return this.cards;
   }
 
+  returnWhenClick (item, index) {
+    if(this.button !== null){
+        return this.button.addEventListener("click", ()=>{
+            console.log("test");
+        })
+    }
+  }
+
   returnCards() {
     this.returnList().then((arr) => {
+        document.querySelector(".loader").classList.add("d-none")
       arr.forEach((item, index) => {
         this.items.innerHTML += `
                 <div class="col-md-3 mt-5">
@@ -30,7 +40,7 @@ class Cards {
                     </div>
                   </div>
   
-                  <div class="sizes">
+                  <div class="sizes hidden">
                     <strong style="font-size: 25px; display: inline-block; margin-bottom: 30px;">Sizes: </strong>
                     <form>
                       <div class="form-check">
@@ -55,12 +65,22 @@ class Cards {
                     </form>
                   </div>
                 </div>
-                
               </div>
                 `;
+
+        // this.returnWhenClick(item, index)
+        document.querySelectorAll(".button button").forEach((btn, idx)=>{
+            btn.addEventListener("click", function(e){
+                console.log("true", idx);
+                document.querySelectorAll(".sizes")[idx].classList.remove("hidden")
+                btn.parentElement.classList.add("d-none")
+            })
+        })
       });
     });
   }
+
+
 }
 
 // export default Cards;
