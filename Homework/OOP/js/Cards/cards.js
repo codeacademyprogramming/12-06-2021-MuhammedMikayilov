@@ -85,23 +85,42 @@ class Cards {
 
         document.querySelectorAll(".sizes form").forEach((form, key) => {
           form.addEventListener("submit", (e) => {
-            // e.preventDefault();
+            e.preventDefault();
+            this.counter = 0;
             document
               .querySelectorAll(".sizes form .form-check .form-check-input")
               .forEach((size, sizeIndex) => {
                 if (size.checked) {
                   this.size = size.getAttribute("data-key");
 
-                  console.log();
-
+                  
+                  
+                  // if([...JSON.parse(storage.getItem("PRODUCT").id === arr[key].id)]){
+                  //   this.setLocalWhickChecked([
+                  //     ...JSON.parse(storage.getItem("PRODUCT")),
+                  //     {
+                  //       count: count++
+                  //     },
+                  //   ]);
+                  // }
+                 
                   this.setLocalWhickChecked([
                     ...JSON.parse(storage.getItem("PRODUCT")),
                     {
+                      id: arr[key]?.id,
                       size: this.size,
                       name: arr[key].name,
                       price: arr[key].price,
                     },
                   ]);
+                  JSON.parse(storage.getItem("PRODUCT")).forEach((local,key)=>{
+                    console.log(local?.id, + " + " + arr[key]);
+
+                    // if(arr[key]?.id === local?.id){
+                    //   counter+=1;
+                    //   console.log(local?.id, + " + " + arr[key]?.id);
+                    // }
+                  })
                 }
               });
           });
