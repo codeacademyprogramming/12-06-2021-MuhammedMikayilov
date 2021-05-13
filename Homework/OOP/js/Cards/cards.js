@@ -10,22 +10,14 @@ class Cards {
     return this.cards;
   }
 
-  returnWhenClick(item, index) {
-    if (this.button !== null) {
-      return this.button.addEventListener("click", () => {
-        console.log("test");
-      });
-    }
-  }
-
   setLocalWhickChecked(item) {
     storage.setItem("PRODUCT", item);
   }
 
   returnArrayForBasket() {
-      return this.array;
+    return storage.getItem("PRODUCT");
   }
- 
+
   returnCards() {
     this.returnList().then((arr) => {
       document.querySelector(".loader").classList.add("d-none");
@@ -48,7 +40,7 @@ class Cards {
                       ${item.price}$
                     </div>
                     <div class="button">
-                      <button>
+                      <button class="open">
                         <i class="fas fa-shopping-bag"></i>
                       </button>
                     </div>
@@ -75,7 +67,8 @@ class Cards {
                           big - 32cm
                         </label>
                       </div>
-                      <button type="submit" class="btn btn-primary w-100" style="background-color: #FE3326; margin-top: 30px; border: none;">Add to basket</button>
+                      <button type="submit" class="btn btn-success addToCards w-100" style="background-color: #FE3326; margin-top: 30px; border: none;">Add to basket</button>
+                      <button type="click" class="btn cancel w-100" style="background-color: #FE3326; margin-top: 30px; border: none;">Cancel</button>
                     </form>
                   </div>
                 </div>
@@ -92,25 +85,51 @@ class Cards {
 
         document.querySelectorAll(".sizes form").forEach((form, key) => {
           form.addEventListener("submit", (e) => {
-            e.preventDefault();
+            // e.preventDefault();
             document
               .querySelectorAll(".sizes form .form-check .form-check-input")
               .forEach((size, sizeIndex) => {
                 if (size.checked) {
                   this.size = size.getAttribute("data-key");
-                  this.array.push({...item, size: this.size,
-                    name: arr[key].name,
-                    price: arr[key].price,});
-                  this.setLocalWhickChecked(this.array);
+
+                  console.log();
+
+                  this.setLocalWhickChecked([
+                    ...JSON.parse(storage.getItem("PRODUCT")),
+                    {
+                      size: this.size,
+                      name: arr[key].name,
+                      price: arr[key].price,
+                    },
+                  ]);
                 }
               });
           });
+        });
 
+        document.querySelectorAll(".sizes .addToCards").forEach((item) => {
+          document.addEventListener("click", (e) => {
+            if (
+              !e.target.classList.contains("sizes") ||
+              !e.target.classList.contains("button")
+            ) {
+              document
+                .querySelectorAll(".button button")
+                .forEach((btn, idx) => {
+                  btn.parentElement.classList.remove("d-none");
+                });
+            }
+          });
+        });
 
+        document.querySelectorAll(".sizes .cancel").forEach((item, idx) => {
+          item.addEventListener("click", (e) => {
+            e.preventDefault()
+            console.log(document.querySelectorAll(".sizes")[idx], "ol");
+            document.querySelectorAll(".sizes")[idx].classList.add("hidden");
+          });
         });
       });
-
-      
     });
   }
 }
